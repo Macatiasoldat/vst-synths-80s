@@ -3,6 +3,12 @@
 Un plugin instrument (VST3, AU sur Mac, et une appli autonome) qui reproduit le caractère de cinq machines :
 **Yamaha DX7, Roland Juno-60, Roland Jupiter-8, Oberheim OB-Xa, Sequential Prophet-5**.
 
+## Installer sur Mac (sans rien compiler)
+
+Chaque version publiée est compilée automatiquement par GitHub. Va dans l'onglet **Releases** du dépôt,
+télécharge `Retro80-Mac.zip`, décompresse-le et suis le fichier `LISEZ-MOI.txt` qu'il contient
+(double-clic sur « Installer Retro80.command », puis Retro80 apparaît dans GarageBand).
+
 ## Architecture
 
 ```

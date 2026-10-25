@@ -1,0 +1,32 @@
+RETRO80 — installation sur Mac
+==============================
+
+Ce dossier contient :
+  - Retro80.component   le plugin pour GarageBand et Logic (format Audio Unit)
+  - Retro80.vst3        le plugin pour Ableton Live, Reaper, FL Studio...
+  - Retro80.app         une appli pour jouer sans logiciel de musique
+  - Installer Retro80.command   installe les trois d'un coup
+
+1. INSTALLER
+   Double-clique sur « Installer Retro80.command ».
+
+   macOS va probablement refuser de l'ouvrir, car le plugin n'est pas signé
+   par Apple (c'est payant, on le fera plus tard). Dans ce cas :
+     a. Ferme le message d'alerte.
+     b. Ouvre Réglages Système → Confidentialité et sécurité.
+     c. Tout en bas, à côté de « Installer Retro80.command a été bloqué »,
+        clique sur « Ouvrir quand même », puis confirme.
+   Une fenêtre noire (le Terminal) s'ouvre, installe tout et dit « Terminé ».
+
+2. JOUER DANS GARAGEBAND (gratuit, déjà sur ton Mac ou sur l'App Store)
+   a. Nouveau projet → Projet vide → Instrument logiciel.
+   b. Dans le panneau de gauche, section Plug-ins, clique sur la case
+      « Instrument » → Modules Audio Units → Retro80 → Retro80.
+   c. Choisis un son dans la liste « Preset » et joue avec le clavier
+      de l'ordinateur (touches Q S D F...) ou un clavier MIDI.
+
+3. JOUER SANS GARAGEBAND
+   Lance l'appli « Retro80 » depuis le dossier Applications.
+   Clique sur les touches du clavier à l'écran.
+
+Si Retro80 n'apparaît pas dans GarageBand : redémarre le Mac, puis rouvre GarageBand.

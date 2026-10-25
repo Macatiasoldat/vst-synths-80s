@@ -1,0 +1,63 @@
+name: Build macOS
+
+# Compile Retro80 pour Mac (Apple Silicon + Intel) à chaque push.
+# Un tag « v* » publie en plus le zip dans une Release GitHub, prêt à télécharger.
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 4 --target Retro80_AU Retro80_VST3 Retro80_Standalone
+
+      - name: Sign (ad hoc) and package
+        run: |
+          set -euo pipefail
+          ARTEFACTS=build/Retro80_artefacts/Release
+          OUT=dist/Retro80-Mac
+          mkdir -p "$OUT"
+          cp -R "$ARTEFACTS/AU/Retro80.component" "$ARTEFACTS/VST3/Retro80.vst3" "$ARTEFACTS/Standalone/Retro80.app" "$OUT/"
+          # Signature locale (sans compte Apple) : obligatoire pour que les Mac Apple Silicon chargent le code.
+          for bundle in "$OUT"/Retro80.component "$OUT"/Retro80.vst3 "$OUT"/Retro80.app; do
+            codesign --force --deep --sign - "$bundle"
+          done
+          cp "packaging/macos/Installer Retro80.command" packaging/macos/LISEZ-MOI.txt "$OUT/"
+          chmod +x "$OUT/Installer Retro80.command"
+          lipo -info "$OUT/Retro80.component/Contents/MacOS/Retro80"
+          (cd dist && ditto -c -k --keepParent Retro80-Mac Retro80-Mac.zip)
+
+      - name: Validate Audio Unit (auval)
+        run: |
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          cp -R dist/Retro80-Mac/Retro80.component ~/Library/Audio/Plug-Ins/Components/
+          killall -9 AudioComponentRegistrar || true
+          auval -v aumu R80s Rt80
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Retro80-Mac
+          path: dist/Retro80-Mac.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/Retro80-Mac.zip --title "Retro80 ${GITHUB_REF_NAME}" --notes "Télécharge Retro80-Mac.zip, décompresse-le et suis LISEZ-MOI.txt."
